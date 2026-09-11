@@ -27,7 +27,7 @@ st.markdown(
 # ---------------------------------------------------------
 # SIDEBAR CONFIGURATION
 # ---------------------------------------------------------
-st.sidebar.header("Intra-Candle Analyzer Settings")
+st.sidebar.header("Settings")
 
 ticker_options = [
     "EURUSD=X", "GBPUSD=X", "AUDUSD=X", "NZDUSD=X", "USDCAD=X",
@@ -143,7 +143,6 @@ def analyze_intra_candle_extremes(df, trend_mode_val, reversed_flag, timeframe):
         c_low = work_df["Low"].iloc[i]
         c_close = work_df["Close"].iloc[i]
         
-        # Determine intra-candle hits vs closes based on standard vs reversed score mapping
         if not reversed_flag:
             hit_plus_3 = c_high >= p_high
             closed_plus_3 = c_close >= p_high
@@ -186,7 +185,7 @@ def analyze_intra_candle_extremes(df, trend_mode_val, reversed_flag, timeframe):
 # ---------------------------------------------------------
 # MAIN DASHBOARD UI
 # ---------------------------------------------------------
-st.title("⚡ Intra-Candle Extreme Score Analyzer")
+st.title("")
 st.markdown(f"Analyzing how often candles **hit** vs. **close** at extreme scores (**+3 / -3**) during formation for **{symbol}** on **{timeframe}**.")
 
 df = fetch_data(symbol, history_period, timeframe)
