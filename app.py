@@ -33,7 +33,7 @@ ticker_options = [
     "EURUSD=X", "GBPUSD=X", "AUDUSD=X", "NZDUSD=X", "USDCAD=X",
     "USDCHF=X", "USDJPY=X", "USDSGD=X", "GC=F", "BZ=F", "ZB=F",
     "BTC-USD", "EURGBP=X", "EURAUD=X", "EURNZD=X", "EURCAD=X",
-    "EURCHF=X", "EURJPY=X", "EURSGD=X", "XAU=X", "GBPAUD=X",
+    "EURCHF=X", "EURJPY=X", "EURSGD=X", "SGDJPY=X", "GBPAUD=X",
     "GBPNZD=X", "GBPCAD=X", "GBPCHF=X", "GBPJPY=X", "GBPSGD=X",
     "AUDNZD=X", "AUDCAD=X", "AUDCHF=X", "AUDJPY=X", "AUDSGD=X",
     "AAPL", "MSFT", "SPY", "QQQ"
