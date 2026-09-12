@@ -48,7 +48,8 @@ trend_mode = st.sidebar.selectbox(
 reversed_flag = st.sidebar.checkbox("Reverse Score Direction", value=False)
 
 st.sidebar.subheader("Timeframe & History")
-timeframe = st.sidebar.selectbox("Timeframe", ["60m", "1d", "1wk", "1mo", "3mo"], index=1)
+# Added "8h" to the timeframe choices
+timeframe = st.sidebar.selectbox("Timeframe", ["60m", "8h", "1d", "1wk", "1mo", "3mo"], index=1)
 history_period = st.sidebar.selectbox("History Range", ["1y", "2y", "5y", "10y", "max"], index=2)
 
 if st.sidebar.button("🔄 Run Analysis"):
@@ -106,9 +107,23 @@ def _compute_single_score(p_open, p_high, p_low, p_close, c_close, trend_mode_va
 @st.cache_data(ttl=300)
 def fetch_data(ticker, period, interval):
     try:
-        data = yf.download(ticker, period=period, interval=interval, progress=False)
-        if isinstance(data.columns, pd.MultiIndex):
-            data.columns = data.columns.get_level_values(0)
+        if interval == "8h":
+            # Yahoo Finance doesn't natively support 8h, fetch 60m and resample
+            data = yf.download(ticker, period=period, interval="60m", progress=False)
+            if isinstance(data.columns, pd.MultiIndex):
+                data.columns = data.columns.get_level_values(0)
+            if data is not None and not data.empty:
+                # Resample hourly data to 8-hour session intervals
+                data = data.resample('8h').agg({
+                    'Open': 'first',
+                    'High': 'max',
+                    'Low': 'min',
+                    'Close': 'last'
+                }).dropna()
+        else:
+            data = yf.download(ticker, period=period, interval=interval, progress=False)
+            if isinstance(data.columns, pd.MultiIndex):
+                data.columns = data.columns.get_level_values(0)
         return data
     except Exception as e:
         return None
@@ -122,7 +137,8 @@ def analyze_intra_candle_extremes(df, trend_mode_val, reversed_flag, timeframe):
         return None
         
     work_df = df.copy()
-    if timeframe in ["60m", "30m", "15m", "5m", "1m"]:
+    # Treat 8h as an intraday timeframe to exclude the currently forming live candle
+    if timeframe in ["60m", "8h", "30m", "15m", "5m", "1m"]:
         work_df = work_df.iloc[:-1]
         
     hit_plus_3_total = 0
